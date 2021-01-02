@@ -13,6 +13,8 @@ from scipy.signal import argrelextrema
 from scipy.signal import find_peaks
 import tensorflow as tf
 
+#pip3 install opencv-python==4.1.2.30 seems to work best on ubuntu.
+
 warnings.filterwarnings('ignore')
 
 def showImg(img, cmap=None):
@@ -136,7 +138,7 @@ def crop_text_to_lines(text, blanks):
     return lines
        
 def main():
-    image = cv2.imread('/Users/jjosburn/Documents/programming/dictionary_heath/bruel/file-0018.png',cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread('/home/jjosburn/temp/pytorch_models/images/outputname-0018.png',cv2.IMREAD_GRAYSCALE)
     
     ret=imageleftrightvertical(image)
     
@@ -176,6 +178,23 @@ def main():
     valley_indexes = argrelextrema(summ, np.less)
     valley_indexes = valley_indexes[0]
     
+
+    peak_x = peak_indexes
+    peak_y = summ[peak_indexes]
+
+    valley_x = valley_indexes
+    valley_y = summ[valley_indexes]
+
+    
+    left_image = cv2.cvtColor(ret[0], cv2.COLOR_GRAY2BGR)
+    H,W = left_image.shape[:2]
+
+    for  y in peak_indexes:
+        #print(y)
+        cv2.line(left_image, (0,y), (W, y), (255,0,0), 1) 
+
+    cv2.imwrite("result.png", left_image)
+    '''
     # Plot main graph.
     (fig, ax) = plt.subplots()
     #ax.plot(data_x, data_y)
@@ -183,12 +202,15 @@ def main():
     # Plot peaks.
     peak_x = peak_indexes
     peak_y = summ[peak_indexes]
+
+    valley_x = valley_indexes
+    valley_y = summ[valley_indexes]
+
     ax.plot(summ)
     ax.plot(peak_x, peak_y, marker='o', linestyle='dashed', color='green', label="Peaks")
     
     # Plot valleys.
-    valley_x = valley_indexes
-    valley_y = summ[valley_indexes]
+
     ax.plot(valley_x, valley_y, marker='o', linestyle='dashed', color='red', label="Valleys")
     
     
@@ -197,7 +219,7 @@ def main():
     plt.legend(loc='best')
     plt.show()
     #plt.savefig('argrelextrema.png')
-
+'''
 '''
     windows=['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
     smoothed = smooth(summ, 35)
